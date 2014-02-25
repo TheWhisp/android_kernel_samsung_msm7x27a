@@ -1667,8 +1667,7 @@ static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 #define MSM_PMEM_MDP_SIZE       0x1800000 //25MB default: 0x1DD1000 (29MB)
 #define MSM7x25A_MSM_PMEM_MDP_SIZE       0x1500000 //22MB
 
-#define MSM_PMEM_ADSP_SIZE      0x900000 // ~9MB
-#define MSM_ION_VIDC_SIZE       0x1200000 // 18MB
+#define MSM_PMEM_ADSP_SIZE      0x1200000 // 18MB
 #define MSM7x25A_MSM_PMEM_ADSP_SIZE      0xB91000 //12MB
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
@@ -3698,7 +3697,7 @@ static void fix_sizes(void)
 	}
 
 #ifdef CONFIG_ION_MSM
-	msm_ion_camera_size = MSM_ION_VIDC_SIZE;
+	msm_ion_camera_size = pmem_adsp_size;
 	msm_ion_audio_size = (MSM_PMEM_AUDIO_SIZE + PMEM_KERNEL_EBI1_SIZE);
 	msm_ion_sf_size = pmem_mdp_size;
 #endif
