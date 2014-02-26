@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
- * Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2013, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -42,6 +42,7 @@
 #include <mach/msm_memtypes.h>
 #include <mach/qdsp5/qdsp5audppcmdi.h>
 #include <mach/qdsp5/qdsp5audppmsg.h>
+#include <mach/qdsp5/qdsp5audpp.h>
 #include <mach/qdsp5/qdsp5audplaycmdi.h>
 #include <mach/qdsp5/qdsp5audplaymsg.h>
 #include <mach/qdsp5/qdsp5rmtcmdi.h>
@@ -326,8 +327,10 @@ static int audio_enable(struct audio *audio)
 		cfg.snd_method = RPC_SND_METHOD_MIDI;
 
 		rc = audmgr_enable(&audio->audmgr, &cfg);
-		if (rc < 0)
+		if (rc < 0) {
+			msm_adsp_dump(audio->audplay);
 			return rc;
+		}
 	}
 
 	if (msm_adsp_enable(audio->audplay)) {
@@ -372,8 +375,11 @@ static int audio_disable(struct audio *audio)
 		wake_up(&audio->read_wait);
 		msm_adsp_disable(audio->audplay);
 		audpp_disable(audio->dec_id, audio);
-		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
-			audmgr_disable(&audio->audmgr);
+		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK) {
+			rc = audmgr_disable(&audio->audmgr);
+			if (rc < 0)
+				msm_adsp_dump(audio->audplay);
+		}
 		audio->out_needed = 0;
 		rmt_put_resource(audio);
 		audio->rmt_resource_released = 1;
@@ -1039,7 +1045,7 @@ static long audmp3_process_event_req(struct audio *audio, void __user *arg)
 static int audmp3_pmem_check(struct audio *audio,
 		void *vaddr, unsigned long len)
 {
-	struct audmp3_pmem_region *region_elt;
+    struct audmp3_pmem_region *region_elt;
 	struct audmp3_pmem_region t = { .vaddr = vaddr, .len = len };
 
 	list_for_each_entry(region_elt, &audio->pmem_region_queue, list) {
@@ -1060,9 +1066,9 @@ static int audmp3_pmem_check(struct audio *audio,
 }
 
 static int audmp3_pmem_add(struct audio *audio,
-	struct msm_audio_pmem_info *info)
+			struct msm_audio_ion_info *info)
 {
-	unsigned long paddr, kvaddr, len;
+    unsigned long paddr, kvaddr, len;
 	struct file *file;
 	struct audmp3_pmem_region *region;
 	int rc = -EINVAL;
@@ -1080,9 +1086,9 @@ static int audmp3_pmem_add(struct audio *audio,
 		goto end;
 	}
 
-	rc = audmp3_pmem_check(audio, info->vaddr, len);
+    rc = audmp3_pmem_check(audio, info->vaddr, len);
 	if (rc < 0) {
-		put_pmem_file(file);
+        put_pmem_file(file);
 		kfree(region);
 		goto end;
 	}
@@ -1102,17 +1108,15 @@ end:
 }
 
 static int audmp3_pmem_remove(struct audio *audio,
-	struct msm_audio_pmem_info *info)
+			struct msm_audio_ion_info *info)
 {
 	struct audmp3_pmem_region *region;
 	struct list_head *ptr, *next;
 	int rc = -EINVAL;
 
-	MM_DBG("info fd %d vaddr %p\n", info->fd, info->vaddr);
-
-	list_for_each_safe(ptr, next, &audio->pmem_region_queue) {
+    MM_DBG("info fd %d vaddr %p\n", info->fd, info->vaddr);
+    list_for_each_safe(ptr, next, &audio->pmem_region_queue) {
 		region = list_entry(ptr, struct audmp3_pmem_region, list);
-
 		if ((region->fd == info->fd) &&
 		    (region->vaddr == info->vaddr)) {
 			if (region->ref_cnt) {
@@ -1134,17 +1138,14 @@ static int audmp3_pmem_remove(struct audio *audio,
 }
 
 static int audmp3_pmem_lookup_vaddr(struct audio *audio, void *addr,
-		     unsigned long len, struct audmp3_pmem_region **region)
+			unsigned long len, struct audmp3_ion_region **region)
 {
 	struct audmp3_pmem_region *region_elt;
-
 	int match_count = 0;
-
 	*region = NULL;
 
 	/* returns physical address or zero */
-	list_for_each_entry(region_elt, &audio->pmem_region_queue,
-		list) {
+	list_for_each_entry(region_elt, &audio->pmem_region_queue, list) {
 		if (addr >= region_elt->vaddr &&
 		    addr < region_elt->vaddr + region_elt->len &&
 		    addr + len <= region_elt->vaddr + region_elt->len) {
@@ -1159,18 +1160,16 @@ static int audmp3_pmem_lookup_vaddr(struct audio *audio, void *addr,
 	}
 
 	if (match_count > 1) {
-		MM_ERR("multiple hits for vaddr %p, len %ld\n", addr, len);
-		list_for_each_entry(region_elt,
-		  &audio->pmem_region_queue, list) {
+        MM_ERR("multiple hits for vaddr %p, len %ld\n", addr, len);
+		list_for_each_entry(region_elt, &audio->pmem_region_queue, list) {
 			if (addr >= region_elt->vaddr &&
-			    addr < region_elt->vaddr + region_elt->len &&
+                addr < region_elt->vaddr + region_elt->len &&
 			    addr + len <= region_elt->vaddr + region_elt->len)
 				MM_ERR("\t%p, %ld --> %p\n", region_elt->vaddr,
 						region_elt->len,
 						(void *)region_elt->paddr);
 		}
 	}
-
 	return *region ? 0 : -1;
 }
 
@@ -1281,6 +1280,7 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 	if (cmd == AUDIO_GET_STATS) {
 		struct msm_audio_stats stats;
+		memset(&stats, 0, sizeof(stats));
 		stats.byte_count = audpp_avsync_byte_count(audio->dec_id);
 		stats.sample_count = audpp_avsync_sample_count(audio->dec_id);
 		if (copy_to_user((void *) arg, &stats, sizeof(stats)))
@@ -1494,6 +1494,7 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 							audio->read_phys,
 							config.buffer_size *
 							config.buffer_count);
+
 
 				if (IS_ERR(audio->map_v_read)) {
 					MM_ERR("map of read buf failed\n");
@@ -1939,13 +1940,12 @@ static ssize_t audio_write(struct file *file, const char __user *buf,
 	}
 	return rc;
 }
-
 static void audmp3_reset_pmem_region(struct audio *audio)
 {
 	struct audmp3_pmem_region *region;
 	struct list_head *ptr, *next;
 
-	list_for_each_safe(ptr, next, &audio->pmem_region_queue) {
+    list_for_each_safe(ptr, next, &audio->pmem_region_queue) {
 		region = list_entry(ptr, struct audmp3_pmem_region, list);
 		list_del(&region->list);
 		put_pmem_file(region->file);
@@ -1967,7 +1967,6 @@ static int audio_release(struct inode *inode, struct file *file)
 	audio->drv_ops.out_flush(audio);
 	audio->drv_ops.in_flush(audio);
 	audmp3_reset_pmem_region(audio);
-
 	msm_adsp_put(audio->audplay);
 	audpp_adec_free(audio->dec_id);
 #ifdef CONFIG_HAS_EARLYSUSPEND
@@ -2129,7 +2128,8 @@ static int audio_open(struct inode *inode, struct file *file)
 	struct audio *audio = NULL;
 	int rc, i, dec_attrb, decid;
 	struct audmp3_event *e_node = NULL;
-	unsigned pmem_sz = DMASZ_MAX;
+    unsigned pmem_sz = DMASZ_MAX;
+
 #ifdef CONFIG_DEBUG_FS
 	/* 4 bytes represents decoder number, 1 byte for terminate string */
 	char name[sizeof "msm_mp3_" + 5];
@@ -2173,7 +2173,7 @@ static int audio_open(struct inode *inode, struct file *file)
 
 	/* Non AIO interface */
 	if (!(file->f_flags & O_NONBLOCK)) {
-		while (pmem_sz >= DMASZ_MIN) {
+while (pmem_sz >= DMASZ_MIN) {
 			MM_DBG("pmemsz = %d\n", pmem_sz);
 			audio->phys = allocate_contiguous_ebi_nomap(pmem_sz,
 								SZ_4K);
@@ -2215,7 +2215,10 @@ static int audio_open(struct inode *inode, struct file *file)
 		if (rc) {
 			MM_ERR("audmgr open failed, freeing instance \
 					0x%08x\n", (int)audio);
-			goto err;
+			if (!(file->f_flags & O_NONBLOCK))
+				goto err;
+			else
+				goto resource_err;
 		}
 	}
 
@@ -2227,7 +2230,10 @@ static int audio_open(struct inode *inode, struct file *file)
 				audio->module_name, (int)audio);
 		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
 			audmgr_close(&audio->audmgr);
-		goto err;
+		if (!(file->f_flags & O_NONBLOCK))
+			goto err;
+		else
+			goto resource_err;
 	}
 
 	rc = rmt_get_resource(audio);
@@ -2237,7 +2243,10 @@ static int audio_open(struct inode *inode, struct file *file)
 		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
 			audmgr_close(&audio->audmgr);
 		msm_adsp_put(audio->audplay);
-		goto err;
+		if (!(file->f_flags & O_NONBLOCK))
+			goto err;
+		else
+			goto resource_err;
 	}
 
 	if (file->f_flags & O_NONBLOCK) {
@@ -2315,13 +2324,15 @@ static int audio_open(struct inode *inode, struct file *file)
 			break;
 		}
 	}
+
 done:
 	return rc;
 err:
-	if (audio->data) {
+    if (audio->data) {
 		iounmap(audio->map_v_write);
 		free_contiguous_memory_by_paddr(audio->phys);
 	}
+resource_err:
 	audpp_adec_free(audio->dec_id);
 	kfree(audio);
 	return rc;
