@@ -153,7 +153,7 @@ static int dsp_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-int dsp_debug_register(dsp_state_cb ptr)
+static inline int dsp_debug_register(dsp_state_cb ptr)
 {
 	if (ptr == NULL)
 		return -EINVAL;

@@ -220,7 +220,7 @@ static int verify_venc_cmd(struct msm_adsp_module *module,
 }
 
 
-int adsp_videoenc_verify_cmd(struct msm_adsp_module *module,
+static inline int adsp_videoenc_verify_cmd(struct msm_adsp_module *module,
 			 unsigned int queue_id, void *cmd_data,
 			 size_t cmd_size)
 {

@@ -257,7 +257,7 @@ static int verify_vdec_pkt_cmd(struct msm_adsp_module *module,
 	return 0;
 }
 
-int adsp_video_verify_cmd(struct msm_adsp_module *module,
+static inline int adsp_video_verify_cmd(struct msm_adsp_module *module,
 			 unsigned int queue_id, void *cmd_data,
 			 size_t cmd_size)
 {
