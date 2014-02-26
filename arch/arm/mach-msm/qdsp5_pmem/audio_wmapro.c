@@ -1,11 +1,10 @@
-/* audio_wma.c - wma audio decoder driver
- *
- * Copyright (c) 2009, 2011-2013, The Linux Foundation. All rights reserved.
+/* audio_wmapro.c - wmapro audio decoder driver
  *
  * Based on the mp3 native driver in arch/arm/mach-msm/qdsp5/audio_mp3.c
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
+ * Copyright (c) 2009-2013, The Linux Foundation. All rights reserved.
  *
  * All source code in this file is licensed under the following license except
  * where indicated.
@@ -37,15 +36,13 @@
 #include <linux/delay.h>
 #include <linux/list.h>
 #include <linux/earlysuspend.h>
+#include <linux/android_pmem.h>
 #include <linux/slab.h>
 #include <linux/msm_audio.h>
-#include <linux/msm_audio_wma.h>
 #include <linux/memory_alloc.h>
-#include <linux/ion.h>
+#include <linux/msm_audio_wmapro.h>
 
 #include <mach/msm_adsp.h>
-#include <mach/iommu.h>
-#include <mach/iommu_domains.h>
 #include <mach/qdsp5/qdsp5audppcmdi.h>
 #include <mach/qdsp5/qdsp5audppmsg.h>
 #include <mach/qdsp5/qdsp5audpp.h>
@@ -54,19 +51,21 @@
 #include <mach/qdsp5/qdsp5rmtcmdi.h>
 #include <mach/debug_mm.h>
 #include <mach/msm_memtypes.h>
+#include <mach/iommu.h>
+#include <mach/iommu_domains.h>
 
 #include "audmgr.h"
 
 /* Size must be power of 2 */
-#define BUFSZ_MAX 	2062	/* Includes meta in size */
-#define BUFSZ_MIN 	1038	/* Includes meta in size */
+#define BUFSZ_MAX	8206	/* Includes meta in size */
+#define BUFSZ_MIN 	2062	/* Includes meta in size */
 #define DMASZ_MAX 	(BUFSZ_MAX * 2)
 #define DMASZ_MIN 	(BUFSZ_MIN * 2)
 
 #define AUDPLAY_INVALID_READ_PTR_OFFSET	0xFFFF
-#define AUDDEC_DEC_WMA 4
+#define AUDDEC_DEC_WMAPRO 13
 
-#define PCM_BUFSZ_MIN 	8216 	/* Hold one stereo WMA frame and meta out*/
+#define PCM_BUFSZ_MIN 	8216 	/* Hold one stereo WMAPRO frame and meta out*/
 #define PCM_BUF_MAX_COUNT 5	/* DSP only accepts 5 buffers at most
 				   but support 2 buffers currently */
 #define ROUTING_MODE_FTRT 1
@@ -77,13 +76,13 @@
 #define  AUDPP_DEC_STATUS_CFG   2
 #define  AUDPP_DEC_STATUS_PLAY  3
 
-#define AUDWMA_METAFIELD_MASK 0xFFFF0000
-#define AUDWMA_EOS_FLG_OFFSET 0x0A /* Offset from beginning of buffer */
-#define AUDWMA_EOS_FLG_MASK 0x01
-#define AUDWMA_EOS_NONE 0x0 /* No EOS detected */
-#define AUDWMA_EOS_SET 0x1 /* EOS set in meta field */
+#define AUDWMAPRO_METAFIELD_MASK 0xFFFF0000
+#define AUDWMAPRO_EOS_FLG_OFFSET 0x0A /* Offset from beginning of buffer */
+#define AUDWMAPRO_EOS_FLG_MASK 0x01
+#define AUDWMAPRO_EOS_NONE 0x0 /* No EOS detected */
+#define AUDWMAPRO_EOS_SET 0x1 /* EOS set in meta field */
 
-#define AUDWMA_EVENT_NUM 10 /* Default number of pre-allocated event packets */
+#define AUDWMAPRO_EVENT_NUM 10 /* Default no. of pre-allocated event packets */
 
 struct buffer {
 	void *data;
@@ -94,13 +93,13 @@ struct buffer {
 };
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
-struct audwma_suspend_ctl {
+struct audwmapro_suspend_ctl {
 	struct early_suspend node;
 	struct audio *audio;
 };
 #endif
 
-struct audwma_event{
+struct audwmapro_event{
 	struct list_head list;
 	int event_type;
 	union msm_audio_event_payload payload;
@@ -139,7 +138,7 @@ struct audio {
 	uint32_t out_sample_rate;
 	uint32_t out_channel_mode;
 
-	struct msm_audio_wma_config wma_config;
+	struct msm_audio_wmapro_config wmapro_config;
 	struct audmgr audmgr;
 
 	/* data allocated for various buffers */
@@ -169,7 +168,7 @@ struct audio {
 	uint32_t read_ptr_offset;
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
-	struct audwma_suspend_ctl suspend_ctl;
+	struct audwmapro_suspend_ctl suspend_ctl;
 #endif
 
 #ifdef CONFIG_DEBUG_FS
@@ -188,9 +187,6 @@ struct audio {
 	int eq_needs_commit;
 	audpp_cmd_cfg_object_params_eqalizer eq;
 	audpp_cmd_cfg_object_params_volume vol_pan;
-	struct ion_client *client;
-	struct ion_handle *input_buff_handle;
-	struct ion_handle *output_buff_handle;
 };
 
 static int auddec_dsp_config(struct audio *audio, int enable);
@@ -201,7 +197,7 @@ static void audplay_config_hostpcm(struct audio *audio);
 static void audplay_buffer_refresh(struct audio *audio);
 static void audio_dsp_event(void *private, unsigned id, uint16_t *msg);
 #ifdef CONFIG_HAS_EARLYSUSPEND
-static void audwma_post_event(struct audio *audio, int type,
+static void audwmapro_post_event(struct audio *audio, int type,
 		union msm_audio_event_payload payload);
 #endif
 
@@ -214,7 +210,7 @@ static int rmt_put_resource(struct audio *audio)
 	cmd.client_id = RM_AUD_CLIENT_ID;
 	cmd.task_id = audio->dec_id;
 	cmd.enable = RMT_DISABLE;
-	cmd.dec_type = AUDDEC_DEC_WMA;
+	cmd.dec_type = AUDDEC_DEC_WMAPRO;
 	client_idx = ((cmd.client_id << 8) | cmd.task_id);
 
 	return put_adsp_resource(client_idx, &cmd, sizeof(cmd));
@@ -229,7 +225,7 @@ static int rmt_get_resource(struct audio *audio)
 	cmd.client_id = RM_AUD_CLIENT_ID;
 	cmd.task_id = audio->dec_id;
 	cmd.enable = RMT_ENABLE;
-	cmd.dec_type = AUDDEC_DEC_WMA;
+	cmd.dec_type = AUDDEC_DEC_WMAPRO;
 	client_idx = ((cmd.client_id << 8) | cmd.task_id);
 
 	return get_adsp_resource(client_idx, &cmd, sizeof(cmd));
@@ -249,7 +245,7 @@ static int audio_enable(struct audio *audio)
 		audio->rmt_resource_released = 0;
 		rc = rmt_get_resource(audio);
 		if (rc) {
-			MM_ERR("ADSP resources are not available for WMA \
+			MM_ERR("ADSP resources are not available for WMAPRO \
 				session 0x%08x on decoder: %d\n Ignoring \
 				error and going ahead with the playback\n",
 				(int)audio, audio->dec_id);
@@ -260,32 +256,28 @@ static int audio_enable(struct audio *audio)
 	audio->out_tail = 0;
 	audio->out_needed = 0;
 
-	if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK) {
-		cfg.tx_rate = RPC_AUD_DEF_SAMPLE_RATE_NONE;
-		cfg.rx_rate = RPC_AUD_DEF_SAMPLE_RATE_48000;
-		cfg.def_method = RPC_AUD_DEF_METHOD_PLAYBACK;
-		cfg.codec = RPC_AUD_DEF_CODEC_WMA;
-		cfg.snd_method = RPC_SND_METHOD_MIDI;
+	cfg.tx_rate = RPC_AUD_DEF_SAMPLE_RATE_NONE;
+	cfg.rx_rate = RPC_AUD_DEF_SAMPLE_RATE_48000;
+	cfg.def_method = RPC_AUD_DEF_METHOD_PLAYBACK;
+	cfg.codec = RPC_AUD_DEF_CODEC_WMA;
+	cfg.snd_method = RPC_SND_METHOD_MIDI;
 
-		rc = audmgr_enable(&audio->audmgr, &cfg);
-		if (rc < 0) {
-			msm_adsp_dump(audio->audplay);
-			return rc;
-		}
+	rc = audmgr_enable(&audio->audmgr, &cfg);
+	if (rc < 0) {
+		msm_adsp_dump(audio->audplay);
+		return rc;
 	}
 
 	if (msm_adsp_enable(audio->audplay)) {
 		MM_ERR("msm_adsp_enable(audplay) failed\n");
-		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
-			audmgr_disable(&audio->audmgr);
+		audmgr_disable(&audio->audmgr);
 		return -ENODEV;
 	}
 
 	if (audpp_enable(audio->dec_id, audio_dsp_event, audio)) {
 		MM_ERR("audpp_enable() failed\n");
 		msm_adsp_disable(audio->audplay);
-		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
-			audmgr_disable(&audio->audmgr);
+		audmgr_disable(&audio->audmgr);
 		return -ENODEV;
 	}
 
@@ -316,11 +308,10 @@ static int audio_disable(struct audio *audio)
 		wake_up(&audio->read_wait);
 		msm_adsp_disable(audio->audplay);
 		audpp_disable(audio->dec_id, audio);
-		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK) {
-			rc = audmgr_disable(&audio->audmgr);
-			if (rc < 0)
-				msm_adsp_dump(audio->audplay);
-		}
+		rc = audmgr_disable(&audio->audmgr);
+		if (rc < 0)
+			msm_adsp_dump(audio->audplay);
+
 		audio->out_needed = 0;
 		rmt_put_resource(audio);
 		audio->rmt_resource_released = 1;
@@ -491,7 +482,7 @@ static void audio_dsp_event(void *private, unsigned id, uint16_t *msg)
 
 }
 
-static struct msm_adsp_ops audplay_adsp_ops_wma = {
+static struct msm_adsp_ops audplay_adsp_ops_wmapro = {
 	.event = audplay_dsp_event,
 };
 
@@ -507,7 +498,7 @@ static int auddec_dsp_config(struct audio *audio, int enable)
 	cfg_dec_cmd[0] = AUDPP_CMD_CFG_DEC_TYPE;
 	if (enable)
 		cfg_dec_cmd[1 + audio->dec_id] = AUDPP_CMD_UPDATDE_CFG_DEC |
-			AUDPP_CMD_ENA_DEC_V | AUDDEC_DEC_WMA;
+			AUDPP_CMD_ENA_DEC_V | AUDDEC_DEC_WMAPRO;
 	else
 		cfg_dec_cmd[1 + audio->dec_id] = AUDPP_CMD_UPDATDE_CFG_DEC |
 			AUDPP_CMD_DIS_DEC_V;
@@ -517,28 +508,25 @@ static int auddec_dsp_config(struct audio *audio, int enable)
 
 static void audpp_cmd_cfg_adec_params(struct audio *audio)
 {
-	struct audpp_cmd_cfg_adec_params_wma cmd;
+	struct audpp_cmd_cfg_adec_params_wmapro cmd;
 
 	memset(&cmd, 0, sizeof(cmd));
 	cmd.common.cmd_id = AUDPP_CMD_CFG_ADEC_PARAMS;
-	cmd.common.length = AUDPP_CMD_CFG_ADEC_PARAMS_WMA_LEN;
+	cmd.common.length = AUDPP_CMD_CFG_ADEC_PARAMS_WMAPRO_LEN;
 	cmd.common.dec_id = audio->dec_id;
 	cmd.common.input_sampling_frequency = audio->out_sample_rate;
 
-	/*
-	 * Test done for sample with the following configuration
-	 * armdatareqthr 	= 1262
-	 * channelsdecoded 	= 1(MONO)/2(STEREO)
-	 * wmabytespersec 	= Tested with 6003 Bytes per sec
-	 * wmasamplingfreq	= 44100
-	 * wmaencoderopts	= 31
-	 */
-
-	cmd.armdatareqthr = audio->wma_config.armdatareqthr;
-	cmd.channelsdecoded = audio->wma_config.channelsdecoded;
-	cmd.wmabytespersec = audio->wma_config.wmabytespersec;
-	cmd.wmasamplingfreq = audio->wma_config.wmasamplingfreq;
-	cmd.wmaencoderopts = audio->wma_config.wmaencoderopts;
+	cmd.armdatareqthr = audio->wmapro_config.armdatareqthr;
+	cmd.numchannels = audio->wmapro_config.numchannels;
+	cmd.validbitspersample = audio->wmapro_config.validbitspersample;
+	cmd.formattag = audio->wmapro_config.formattag;
+	cmd.samplingrate = audio->wmapro_config.samplingrate;
+	cmd.avgbytespersecond = audio->wmapro_config.avgbytespersecond;
+	cmd.asfpacketlength = audio->wmapro_config.asfpacketlength;
+	cmd.channelmask = audio->wmapro_config.channelmask;
+	cmd.encodeopt = audio->wmapro_config.encodeopt;
+	cmd.advancedencodeopt = audio->wmapro_config.advancedencodeopt;
+	cmd.advancedencodeopt2 = audio->wmapro_config.advancedencodeopt2;
 
 	audpp_send_queue2(&cmd, sizeof(cmd));
 }
@@ -599,15 +587,13 @@ static int audplay_dsp_send_data_avail(struct audio *audio,
 
 	cmd.cmd_id		= AUDPLAY_CMD_BITSTREAM_DATA_AVAIL_NT2;
 	if (audio->mfield)
-		cmd.decoder_id = AUDWMA_METAFIELD_MASK |
+		cmd.decoder_id = AUDWMAPRO_METAFIELD_MASK |
 			(audio->out[idx].mfield_sz >> 1);
 	else
 		cmd.decoder_id		= audio->dec_id;
 	cmd.buf_ptr		= audio->out[idx].addr;
 	cmd.buf_size		= len/2;
 	cmd.partition_number	= 0;
-	/* complete writes to the input buffer */
-	wmb();
 	return audplay_send_queue0(audio, &cmd, sizeof(cmd));
 }
 
@@ -684,7 +670,6 @@ static void audio_flush(struct audio *audio)
 static void audio_flush_pcm_buf(struct audio *audio)
 {
 	uint8_t index;
-
 	unsigned long flags;
 
 	spin_lock_irqsave(&audio->dsp_lock, flags);
@@ -712,7 +697,7 @@ static void audio_ioport_reset(struct audio *audio)
 	mutex_unlock(&audio->read_lock);
 }
 
-static int audwma_events_pending(struct audio *audio)
+static int audwmapro_events_pending(struct audio *audio)
 {
 	unsigned long flags;
 	int empty;
@@ -723,22 +708,22 @@ static int audwma_events_pending(struct audio *audio)
 	return empty || audio->event_abort;
 }
 
-static void audwma_reset_event_queue(struct audio *audio)
+static void audwmapro_reset_event_queue(struct audio *audio)
 {
 	unsigned long flags;
-	struct audwma_event *drv_evt;
+	struct audwmapro_event *drv_evt;
 	struct list_head *ptr, *next;
 
 	spin_lock_irqsave(&audio->event_queue_lock, flags);
 	list_for_each_safe(ptr, next, &audio->event_queue) {
 		drv_evt = list_first_entry(&audio->event_queue,
-				struct audwma_event, list);
+				struct audwmapro_event, list);
 		list_del(&drv_evt->list);
 		kfree(drv_evt);
 	}
 	list_for_each_safe(ptr, next, &audio->free_event_queue) {
 		drv_evt = list_first_entry(&audio->free_event_queue,
-				struct audwma_event, list);
+				struct audwmapro_event, list);
 		list_del(&drv_evt->list);
 		kfree(drv_evt);
 	}
@@ -747,11 +732,11 @@ static void audwma_reset_event_queue(struct audio *audio)
 	return;
 }
 
-static long audwma_process_event_req(struct audio *audio, void __user *arg)
+static long audwmapro_process_event_req(struct audio *audio, void __user *arg)
 {
 	long rc;
 	struct msm_audio_event usr_evt;
-	struct audwma_event *drv_evt = NULL;
+	struct audwmapro_event *drv_evt = NULL;
 	int timeout;
 	unsigned long flags;
 
@@ -761,14 +746,14 @@ static long audwma_process_event_req(struct audio *audio, void __user *arg)
 	timeout = (int) usr_evt.timeout_ms;
 
 	if (timeout > 0) {
-		rc = wait_event_interruptible_timeout(
-				audio->event_wait, audwma_events_pending(audio),
+		rc = wait_event_interruptible_timeout(audio->event_wait,
+				audwmapro_events_pending(audio),
 				msecs_to_jiffies(timeout));
 		if (rc == 0)
 			return -ETIMEDOUT;
 	} else {
 		rc = wait_event_interruptible(
-			audio->event_wait, audwma_events_pending(audio));
+			audio->event_wait, audwmapro_events_pending(audio));
 	}
 
 	if (rc < 0)
@@ -784,7 +769,7 @@ static long audwma_process_event_req(struct audio *audio, void __user *arg)
 	spin_lock_irqsave(&audio->event_queue_lock, flags);
 	if (!list_empty(&audio->event_queue)) {
 		drv_evt = list_first_entry(&audio->event_queue,
-				struct audwma_event, list);
+				struct audwmapro_event, list);
 		list_del(&drv_evt->list);
 	}
 
@@ -824,10 +809,6 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	uint16_t enable_mask;
 	int enable;
 	int prev_state;
-	unsigned long ionflag = 0;
-	ion_phys_addr_t addr = 0;
-	struct ion_handle *handle = NULL;
-	int len = 0;
 
 	MM_DBG("cmd = %d\n", cmd);
 
@@ -894,7 +875,7 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	if (cmd == AUDIO_GET_EVENT) {
 		MM_DBG("AUDIO_GET_EVENT\n");
 		if (mutex_trylock(&audio->get_event_lock)) {
-			rc = audwma_process_event_req(audio,
+			rc = audwmapro_process_event_req(audio,
 					(void __user *) arg);
 			mutex_unlock(&audio->get_event_lock);
 		} else
@@ -989,16 +970,16 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 		break;
 	}
-	case AUDIO_GET_WMA_CONFIG:{
-			if (copy_to_user((void *)arg, &audio->wma_config,
-				sizeof(audio->wma_config)))
+	case AUDIO_GET_WMAPRO_CONFIG:{
+			if (copy_to_user((void *)arg, &audio->wmapro_config,
+				sizeof(audio->wmapro_config)))
 				rc = -EFAULT;
 			else
 				rc = 0;
 			break;
 		}
-	case AUDIO_SET_WMA_CONFIG:{
-		struct msm_audio_wma_config usr_config;
+	case AUDIO_SET_WMAPRO_CONFIG:{
+		struct msm_audio_wmapro_config usr_config;
 
 		if (copy_from_user
 			(&usr_config, (void *)arg,
@@ -1007,7 +988,16 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			break;
 		}
 
-		audio->wma_config = usr_config;
+		audio->wmapro_config = usr_config;
+
+		/* Need to swap the first and last words of advancedencodeopt2
+		 * as DSP cannot read 32-bit variable at a time. Need to be
+		 * split into two 16-bit and swap them as required by DSP */
+
+		audio->wmapro_config.advancedencodeopt2 =
+			((audio->wmapro_config.advancedencodeopt2 & 0xFFFF0000)
+			 >> 16) | ((audio->wmapro_config.advancedencodeopt2
+			 << 16) & 0xFFFF0000);
 		rc = 0;
 		break;
 	}
@@ -1032,7 +1022,7 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			}
 			if (config.pcm_feedback != audio->pcm_feedback) {
 				MM_ERR("Not sufficient permission to"
-					 "change the playback mode\n");
+						"change the playback mode\n");
 				rc = -EACCES;
 				break;
 			}
@@ -1048,59 +1038,30 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 				MM_DBG("allocate PCM buffer %d\n",
 						config.buffer_count *
 						config.buffer_size);
-				handle = ion_alloc(audio->client,
-					(config.buffer_size *
-					config.buffer_count),
-					SZ_4K, ION_HEAP(ION_AUDIO_HEAP_ID));
-				if (IS_ERR_OR_NULL(handle)) {
-					MM_ERR("Unable to alloc I/P buffs\n");
-					audio->input_buff_handle = NULL;
+				audio->read_phys =
+						allocate_contiguous_ebi_nomap(
+							config.buffer_size *
+							config.buffer_count,
+							SZ_4K);
+				if (!audio->read_phys) {
 					rc = -ENOMEM;
 					break;
 				}
+				audio->map_v_read = ioremap(
+						audio->read_phys,
+						config.buffer_size *
+						config.buffer_count);
 
-				audio->input_buff_handle = handle;
-
-				rc = ion_phys(audio->client ,
-					handle, &addr, &len);
-				if (rc) {
-					MM_ERR("Invalid phy: %x sz: %x\n",
-						(unsigned int) addr,
-						(unsigned int) len);
-					ion_free(audio->client, handle);
-					audio->input_buff_handle = NULL;
-					rc = -ENOMEM;
-					break;
-				} else {
-					MM_INFO("Got valid phy: %x sz: %x\n",
-						(unsigned int) audio->read_phys,
-						(unsigned int) len);
-				}
-				audio->read_phys = (int32_t)addr;
-
-				rc = ion_handle_get_flags(audio->client,
-					handle, &ionflag);
-				if (rc) {
-					MM_ERR("could not get flags\n");
-					ion_free(audio->client, handle);
-					audio->input_buff_handle = NULL;
-					rc = -ENOMEM;
-					break;
-				}
-
-				audio->map_v_read = ion_map_kernel(
-					audio->client,
-					handle, ionflag);
 				if (IS_ERR(audio->map_v_read)) {
 					MM_ERR("map of read buf failed\n");
-					ion_free(audio->client, handle);
-					audio->input_buff_handle = NULL;
 					rc = -ENOMEM;
+					free_contiguous_memory_by_paddr(
+							audio->read_phys);
 				} else {
 					uint8_t index;
 					uint32_t offset = 0;
-					audio->read_data =
-						audio->map_v_read;
+					audio->read_data = audio->map_v_read;
+					audio->pcm_feedback = 1;
 					audio->buf_refresh = 0;
 					audio->pcm_buf_count =
 					    config.buffer_count;
@@ -1142,8 +1103,7 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 }
 
 /* Only useful in tunnel-mode */
-static int audio_fsync(struct file *file, loff_t a, loff_t b,
-	int datasync)
+static int audio_fsync(struct file *file, loff_t a, loff_t b, int datasync)
 {
 	struct audio *audio = file->private_data;
 	struct buffer *frame;
@@ -1243,8 +1203,6 @@ static ssize_t audio_read(struct file *file, char __user *buf, size_t count,
 		} else {
 			MM_DBG("audio_read: read from in[%d]\n",
 					audio->read_next);
-			/* order reads from the output buffer */
-			rmb();
 			if (copy_to_user
 			    (buf, audio->in[audio->read_next].data,
 			     audio->in[audio->read_next].used)) {
@@ -1284,7 +1242,7 @@ static ssize_t audio_read(struct file *file, char __user *buf, size_t count,
 	return rc;
 }
 
-static int audwma_process_eos(struct audio *audio,
+static int audwmapro_process_eos(struct audio *audio,
 		const char __user *buf_start, unsigned short mfield_size)
 {
 	int rc = 0;
@@ -1352,7 +1310,7 @@ static ssize_t audio_write(struct file *file, const char __user *buf,
 	struct buffer *frame;
 	size_t xfer;
 	char *cpy_ptr;
-	int rc = 0, eos_condition = AUDWMA_EOS_NONE;
+	int rc = 0, eos_condition = AUDWMAPRO_EOS_NONE;
 	unsigned dsize;
 	unsigned short mfield_size = 0;
 
@@ -1393,16 +1351,16 @@ static ssize_t audio_write(struct file *file, const char __user *buf,
 				/* Check if EOS flag is set and buffer has
 				 * contains just meta field
 				 */
-				if (cpy_ptr[AUDWMA_EOS_FLG_OFFSET] &
-						 AUDWMA_EOS_FLG_MASK) {
+				if (cpy_ptr[AUDWMAPRO_EOS_FLG_OFFSET] &
+						 AUDWMAPRO_EOS_FLG_MASK) {
 					MM_DBG("audio_write: EOS SET\n");
-					eos_condition = AUDWMA_EOS_SET;
+					eos_condition = AUDWMAPRO_EOS_SET;
 					if (mfield_size == count) {
 						buf += mfield_size;
 						break;
 					} else
-						cpy_ptr[AUDWMA_EOS_FLG_OFFSET]
-							&= ~AUDWMA_EOS_FLG_MASK;
+					cpy_ptr[AUDWMAPRO_EOS_FLG_OFFSET]
+						&= ~AUDWMAPRO_EOS_FLG_MASK;
 				}
 				cpy_ptr += mfield_size;
 				count -= mfield_size;
@@ -1449,8 +1407,8 @@ static ssize_t audio_write(struct file *file, const char __user *buf,
 			audplay_send_data(audio, 0);
 		}
 	}
-	if (eos_condition == AUDWMA_EOS_SET)
-		rc = audwma_process_eos(audio, start, mfield_size);
+	if (eos_condition == AUDWMAPRO_EOS_SET)
+		rc = audwmapro_process_eos(audio, start, mfield_size);
 	mutex_unlock(&audio->write_lock);
 	if (!rc) {
 		if (buf > start)
@@ -1477,14 +1435,13 @@ static int audio_release(struct inode *inode, struct file *file)
 #endif
 	audio->event_abort = 1;
 	wake_up(&audio->event_wait);
-	audwma_reset_event_queue(audio);
-	ion_unmap_kernel(audio->client, audio->output_buff_handle);
-	ion_free(audio->client, audio->output_buff_handle);
-	if (audio->input_buff_handle != NULL) {
-		ion_unmap_kernel(audio->client, audio->input_buff_handle);
-		ion_free(audio->client, audio->input_buff_handle);
+	audwmapro_reset_event_queue(audio);
+	iounmap(audio->map_v_write);
+	free_contiguous_memory_by_paddr(audio->phys);
+	if (audio->read_data) {
+		iounmap(audio->map_v_read);
+		free_contiguous_memory_by_paddr(audio->read_phys);
 	}
-	ion_client_destroy(audio->client);
 	mutex_unlock(&audio->lock);
 #ifdef CONFIG_DEBUG_FS
 	if (audio->dentry)
@@ -1495,20 +1452,20 @@ static int audio_release(struct inode *inode, struct file *file)
 }
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
-static void audwma_post_event(struct audio *audio, int type,
+static void audwmapro_post_event(struct audio *audio, int type,
 		union msm_audio_event_payload payload)
 {
-	struct audwma_event *e_node = NULL;
+	struct audwmapro_event *e_node = NULL;
 	unsigned long flags;
 
 	spin_lock_irqsave(&audio->event_queue_lock, flags);
 
 	if (!list_empty(&audio->free_event_queue)) {
 		e_node = list_first_entry(&audio->free_event_queue,
-				struct audwma_event, list);
+				struct audwmapro_event, list);
 		list_del(&e_node->list);
 	} else {
-		e_node = kmalloc(sizeof(struct audwma_event), GFP_ATOMIC);
+		e_node = kmalloc(sizeof(struct audwmapro_event), GFP_ATOMIC);
 		if (!e_node) {
 			MM_ERR("No mem to post event %d\n", type);
 			spin_unlock_irqrestore(&audio->event_queue_lock, flags);
@@ -1524,35 +1481,35 @@ static void audwma_post_event(struct audio *audio, int type,
 	wake_up(&audio->event_wait);
 }
 
-static void audwma_suspend(struct early_suspend *h)
+static void audwmapro_suspend(struct early_suspend *h)
 {
-	struct audwma_suspend_ctl *ctl =
-		container_of(h, struct audwma_suspend_ctl, node);
+	struct audwmapro_suspend_ctl *ctl =
+		container_of(h, struct audwmapro_suspend_ctl, node);
 	union msm_audio_event_payload payload;
 
 	MM_DBG("\n"); /* Macro prints the file name and function */
-	audwma_post_event(ctl->audio, AUDIO_EVENT_SUSPEND, payload);
+	audwmapro_post_event(ctl->audio, AUDIO_EVENT_SUSPEND, payload);
 }
 
-static void audwma_resume(struct early_suspend *h)
+static void audwmapro_resume(struct early_suspend *h)
 {
-	struct audwma_suspend_ctl *ctl =
-		container_of(h, struct audwma_suspend_ctl, node);
+	struct audwmapro_suspend_ctl *ctl =
+		container_of(h, struct audwmapro_suspend_ctl, node);
 	union msm_audio_event_payload payload;
 
 	MM_DBG("\n"); /* Macro prints the file name and function */
-	audwma_post_event(ctl->audio, AUDIO_EVENT_RESUME, payload);
+	audwmapro_post_event(ctl->audio, AUDIO_EVENT_RESUME, payload);
 }
 #endif
 
 #ifdef CONFIG_DEBUG_FS
-static ssize_t audwma_debug_open(struct inode *inode, struct file *file)
+static ssize_t audwmapro_debug_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
-static ssize_t audwma_debug_read(struct file *file, char __user *buf,
+static ssize_t audwmapro_debug_read(struct file *file, char __user *buf,
 			  size_t count, loff_t *ppos)
 {
 	const int debug_bufmax = 4096;
@@ -1616,9 +1573,9 @@ static ssize_t audwma_debug_read(struct file *file, char __user *buf,
 	return simple_read_from_buffer(buf, count, ppos, buffer, n);
 }
 
-static const struct file_operations audwma_debug_fops = {
-	.read = audwma_debug_read,
-	.open = audwma_debug_open,
+static const struct file_operations audwmapro_debug_fops = {
+	.read = audwmapro_debug_read,
+	.open = audwmapro_debug_open,
 };
 #endif
 
@@ -1626,16 +1583,11 @@ static int audio_open(struct inode *inode, struct file *file)
 {
 	struct audio *audio = NULL;
 	int rc, dec_attrb, decid, i;
-	unsigned mem_sz = DMASZ_MAX;
-	struct audwma_event *e_node = NULL;
-	unsigned long ionflag = 0;
-	ion_phys_addr_t addr = 0;
-	struct ion_handle *handle = NULL;
-	struct ion_client *client = NULL;
-	int len = 0;
+	unsigned pmem_sz = DMASZ_MAX;
+	struct audwmapro_event *e_node = NULL;
 #ifdef CONFIG_DEBUG_FS
 	/* 4 bytes represents decoder number, 1 byte for terminate string */
-	char name[sizeof "msm_wma_" + 5];
+	char name[sizeof "msm_wmapro_" + 5];
 #endif
 
 	/* Allocate Mem for audio instance */
@@ -1648,7 +1600,7 @@ static int audio_open(struct inode *inode, struct file *file)
 	MM_INFO("audio instance 0x%08x created\n", (int)audio);
 
 	/* Allocate the decoder */
-	dec_attrb = AUDDEC_DEC_WMA;
+	dec_attrb = AUDDEC_DEC_WMAPRO;
 	if ((file->f_mode & FMODE_WRITE) &&
 			(file->f_mode & FMODE_READ)) {
 		dec_attrb |= MSM_AUD_MODE_NONTUNNEL;
@@ -1675,75 +1627,56 @@ static int audio_open(struct inode *inode, struct file *file)
 	}
 	audio->dec_id = decid & MSM_AUD_DECODER_MASK;
 
-	client = msm_ion_client_create(UINT_MAX, "Audio_WMA_Client");
-	if (IS_ERR_OR_NULL(client)) {
-		pr_err("Unable to create ION client\n");
-		rc = -ENOMEM;
-		goto client_create_error;
+	while (pmem_sz >= DMASZ_MIN) {
+		MM_DBG("pmemsz = %d\n", pmem_sz);
+		audio->phys = allocate_contiguous_ebi_nomap(pmem_sz, SZ_4K);
+		if (audio->phys) {
+			audio->map_v_write = ioremap(audio->phys, pmem_sz);
+			if (IS_ERR(audio->map_v_write)) {
+				MM_ERR("could not map write buffers, \
+						freeing instance 0x%08x\n",
+						(int)audio);
+				rc = -ENOMEM;
+				free_contiguous_memory_by_paddr(audio->phys);
+				audpp_adec_free(audio->dec_id);
+				kfree(audio);
+				goto done;
+			}
+			audio->data = audio->map_v_write;
+			MM_DBG("write buf: phy addr 0x%08x kernel addr \
+				0x%08x\n", audio->phys, (int)audio->data);
+			break;
+		} else if (pmem_sz == DMASZ_MIN) {
+			MM_ERR("could not allocate write buffers, freeing \
+					instance 0x%08x\n", (int)audio);
+			rc = -ENOMEM;
+			audpp_adec_free(audio->dec_id);
+			kfree(audio);
+			goto done;
+		} else
+		pmem_sz >>= 1;
 	}
-	audio->client = client;
+	audio->out_dma_sz = pmem_sz;
 
-	handle = ion_alloc(client, mem_sz, SZ_4K,
-		ION_HEAP(ION_AUDIO_HEAP_ID));
-	if (IS_ERR_OR_NULL(handle)) {
-		MM_ERR("Unable to create allocate O/P buffers\n");
-		rc = -ENOMEM;
-		goto output_buff_alloc_error;
-	}
-	audio->output_buff_handle = handle;
-
-	rc = ion_phys(client, handle, &addr, &len);
+	rc = audmgr_open(&audio->audmgr);
 	if (rc) {
-		MM_ERR("O/P buffers:Invalid phy: %x sz: %x\n",
-			(unsigned int) addr, (unsigned int) len);
-		goto output_buff_get_phys_error;
-	} else {
-		MM_INFO("O/P buffers:valid phy: %x sz: %x\n",
-			(unsigned int) addr, (unsigned int) len);
-	}
-	audio->phys = (int32_t)addr;
-
-
-	rc = ion_handle_get_flags(client, handle, &ionflag);
-	if (rc) {
-		MM_ERR("could not get flags for the handle\n");
-		goto output_buff_get_flags_error;
-	}
-
-	audio->map_v_write = ion_map_kernel(client, handle, ionflag);
-	if (IS_ERR(audio->map_v_write)) {
-		MM_ERR("could not map write buffers\n");
-		rc = -ENOMEM;
-		goto output_buff_map_error;
-	}
-	audio->data = audio->map_v_write;
-	MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
-		audio->phys, (int)audio->data);
-
-	audio->out_dma_sz = mem_sz;
-
-	if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK) {
-		rc = audmgr_open(&audio->audmgr);
-		if (rc) {
-			MM_ERR("audmgr open failed, freeing instance \
-					0x%08x\n", (int)audio);
-			goto err;
-		}
+		MM_ERR("audmgr open failed, freeing instance 0x%08x\n",
+				(int)audio);
+		goto err;
 	}
 
 	rc = msm_adsp_get(audio->module_name, &audio->audplay,
-			&audplay_adsp_ops_wma, audio);
+			&audplay_adsp_ops_wmapro, audio);
 	if (rc) {
 		MM_ERR("failed to get %s module, freeing instance 0x%08x\n",
 				audio->module_name, (int)audio);
-		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
-			audmgr_close(&audio->audmgr);
+		audmgr_close(&audio->audmgr);
 		goto err;
 	}
 
 	rc = rmt_get_resource(audio);
 	if (rc) {
-		MM_ERR("ADSP resources are not available for WMA session \
+		MM_ERR("ADSP resources are not available for WMAPRO session \
 			 0x%08x on decoder: %d\n", (int)audio, audio->dec_id);
 		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
 			audmgr_close(&audio->audmgr);
@@ -1751,7 +1684,6 @@ static int audio_open(struct inode *inode, struct file *file)
 		goto err;
 	}
 
-	audio->input_buff_handle = NULL;
 	mutex_init(&audio->lock);
 	mutex_init(&audio->write_lock);
 	mutex_init(&audio->read_lock);
@@ -1773,12 +1705,6 @@ static int audio_open(struct inode *inode, struct file *file)
 	audio->out[1].addr = audio->phys + audio->out[0].size;
 	audio->out[1].size = audio->out[0].size;
 
-	audio->wma_config.armdatareqthr =  1262;
-	audio->wma_config.channelsdecoded = 2;
-	audio->wma_config.wmabytespersec = 6003;
-	audio->wma_config.wmasamplingfreq = 44100;
-	audio->wma_config.wmaencoderopts = 31;
-
 	audio->out_sample_rate = 44100;
 	audio->out_channel_mode = AUDPP_CMD_PCM_INTF_STEREO_V;
 
@@ -1789,23 +1715,23 @@ static int audio_open(struct inode *inode, struct file *file)
 	file->private_data = audio;
 	audio->opened = 1;
 #ifdef CONFIG_DEBUG_FS
-	snprintf(name, sizeof name, "msm_wma_%04x", audio->dec_id);
+	snprintf(name, sizeof name, "msm_wmapro_%04x", audio->dec_id);
 	audio->dentry = debugfs_create_file(name, S_IFREG | S_IRUGO,
 				NULL, (void *) audio,
-				&audwma_debug_fops);
+				&audwmapro_debug_fops);
 
 	if (IS_ERR(audio->dentry))
 		MM_DBG("debugfs_create_file failed\n");
 #endif
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	audio->suspend_ctl.node.level = EARLY_SUSPEND_LEVEL_DISABLE_FB;
-	audio->suspend_ctl.node.resume = audwma_resume;
-	audio->suspend_ctl.node.suspend = audwma_suspend;
+	audio->suspend_ctl.node.resume = audwmapro_resume;
+	audio->suspend_ctl.node.suspend = audwmapro_suspend;
 	audio->suspend_ctl.audio = audio;
 	register_early_suspend(&audio->suspend_ctl.node);
 #endif
-	for (i = 0; i < AUDWMA_EVENT_NUM; i++) {
-		e_node = kmalloc(sizeof(struct audwma_event), GFP_KERNEL);
+	for (i = 0; i < AUDWMAPRO_EVENT_NUM; i++) {
+		e_node = kmalloc(sizeof(struct audwmapro_event), GFP_KERNEL);
 		if (e_node)
 			list_add_tail(&e_node->list, &audio->free_event_queue);
 		else {
@@ -1816,20 +1742,14 @@ static int audio_open(struct inode *inode, struct file *file)
 done:
 	return rc;
 err:
-	ion_unmap_kernel(client, audio->output_buff_handle);
-output_buff_map_error:
-output_buff_get_phys_error:
-output_buff_get_flags_error:
-	ion_free(client, audio->output_buff_handle);
-output_buff_alloc_error:
-	ion_client_destroy(client);
-client_create_error:
+	iounmap(audio->map_v_write);
+	free_contiguous_memory_by_paddr(audio->phys);
 	audpp_adec_free(audio->dec_id);
 	kfree(audio);
 	return rc;
 }
 
-static const struct file_operations audio_wma_fops = {
+static const struct file_operations audio_wmapro_fops = {
 	.owner		= THIS_MODULE,
 	.open		= audio_open,
 	.release	= audio_release,
@@ -1839,15 +1759,15 @@ static const struct file_operations audio_wma_fops = {
 	.fsync 		= audio_fsync,
 };
 
-struct miscdevice audio_wma_misc = {
+struct miscdevice audio_wmapro_misc = {
 	.minor	= MISC_DYNAMIC_MINOR,
-	.name	= "msm_wma",
-	.fops	= &audio_wma_fops,
+	.name	= "msm_wmapro",
+	.fops	= &audio_wmapro_fops,
 };
 
 static int __init audio_init(void)
 {
-	return misc_register(&audio_wma_misc);
+	return misc_register(&audio_wmapro_misc);
 }
 
 device_initcall(audio_init);

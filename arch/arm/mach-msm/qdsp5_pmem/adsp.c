@@ -133,7 +133,7 @@ uint32_t adsp_get_module(struct adsp_info *info, uint32_t task)
 	return info->task_to_module[current_image][task];
 }
 
-uint32_t adsp_get_queue_offset(struct adsp_info *info, uint32_t queue_id)
+static inline uint32_t adsp_get_queue_offset(struct adsp_info *info, uint32_t queue_id)
 {
 	return info->queue_offset[current_image][queue_id];
 }
@@ -555,7 +555,7 @@ fail:
 }
 EXPORT_SYMBOL(msm_adsp_write);
 
-int msm_adsp_write(struct msm_adsp_module *module, unsigned dsp_queue_addr,
+static inline int msm_adsp_write(struct msm_adsp_module *module, unsigned dsp_queue_addr,
 			void *cmd_buf, size_t cmd_size)
 {
 	int rc, retries = 0;
@@ -1041,7 +1041,7 @@ int adsp_set_clkrate(struct msm_adsp_module *module, unsigned long clk_rate)
 	return -EINVAL;
 }
 
-int msm_adsp_generate_event(void *data,
+static inline int msm_adsp_generate_event(void *data,
 			struct msm_adsp_module *mod,
 			unsigned event_id,
 			unsigned event_length,
@@ -1294,7 +1294,7 @@ static int msm_adsp_probe(struct platform_device *pdev)
 			clk_set_rate(mod->clk, adsp_info.module[i].clk_rate);
 		mod->verify_cmd = adsp_info.module[i].verify_cmd;
 		mod->patch_event = adsp_info.module[i].patch_event;
-		INIT_HLIST_HEAD(&mod->ion_regions);
+		INIT_HLIST_HEAD(&mod->pmem_regions);
 		mod->pdev.name = adsp_info.module[i].pdev_name;
 		mod->pdev.id = -1;
 		adsp_info.id_to_module[i] = mod;
