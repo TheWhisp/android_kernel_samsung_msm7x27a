@@ -9,7 +9,7 @@ of stability according to the rules described below.
 
 The different levels of stability are:
 
-  stable/
+  table/
 	This directory documents the interfaces that the developer has
 	defined to be stable.  Userspace programs are free to use these
 	interfaces with no restrictions, and backward compatibility for
