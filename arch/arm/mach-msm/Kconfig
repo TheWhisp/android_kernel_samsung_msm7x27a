@@ -164,17 +164,8 @@ config ARCH_MSM8960
 	select MSM_NATIVE_RESTART
 	select DONT_MAP_HOLE_AFTER_MEMBANK0
 	select MSM_REMOTE_SPINLOCK_SFPB
-	select ARCH_POPULATES_NODE_MAP
 	select ARCH_SPARSEMEM_ENABLE
 	select ARCH_HAS_HOLES_MEMORYMODEL
-	select MEMORY_HOTPLUG if ENABLE_DMM
-	select MEMORY_HOTREMOVE if ENABLE_DMM
-	select ARCH_ENABLE_MEMORY_HOTPLUG if ENABLE_DMM
-	select ARCH_ENABLE_MEMORY_HOTREMOVE if ENABLE_DMM
-	select MIGRATION if ENABLE_DMM
-	select ARCH_MEMORY_PROBE if ENABLE_DMM
-	select ARCH_MEMORY_REMOVE if ENABLE_DMM
-	select FIX_MOVABLE_ZONE if ENABLE_DMM
 	select CLEANCACHE
 	select MSM_MULTIMEDIA_USE_ION
 	select MULTI_IRQ_HANDLER
@@ -206,17 +197,8 @@ config ARCH_MSM8930
 	select MSM_NATIVE_RESTART
 	select DONT_MAP_HOLE_AFTER_MEMBANK0
 	select MSM_REMOTE_SPINLOCK_SFPB
-	select ARCH_POPULATES_NODE_MAP
 	select ARCH_SPARSEMEM_ENABLE
 	select ARCH_HAS_HOLES_MEMORYMODEL
-	select MEMORY_HOTPLUG if ENABLE_DMM
-	select MEMORY_HOTREMOVE if ENABLE_DMM
-	select ARCH_ENABLE_MEMORY_HOTPLUG if ENABLE_DMM
-	select ARCH_ENABLE_MEMORY_HOTREMOVE if ENABLE_DMM
-	select MIGRATION if ENABLE_DMM
-	select ARCH_MEMORY_PROBE if ENABLE_DMM
-	select ARCH_MEMORY_REMOVE if ENABLE_DMM
-	select FIX_MOVABLE_ZONE if ENABLE_DMM
 	select MSM_ULTRASOUND
 	select MULTI_IRQ_HANDLER
 	select MSM_PM8X60 if PM
@@ -1081,7 +1063,6 @@ choice
 	config DEBUG_MSM8960_UART
 		bool "Kernel low-level debugging messages via MSM 8960 UART"
 		depends on ARCH_MSM8960
-		select DEBUG_MSM8930_UART
 		select MSM_HAS_DEBUG_UART_HS
 		help
 		  Say Y here if you want the debug print routines to direct
@@ -1921,7 +1902,6 @@ config MSM_RPM_REGULATOR_SMD
 config MSM_PIL
 	bool "Peripheral image loading"
 	select FW_LOADER
-	depends on (ARCH_MSM8X60 || ARCH_MSM8960)
 	default n
 	help
 	  Some peripherals need to be loaded into memory before they can be
@@ -2132,31 +2112,15 @@ config MSM_RPM_STATS_LOG
 	  the low power modes that RPM enters. The drivers outputs the message
 	  via a debugfs node.
 
-config MSM_IOMMU
-	bool "MSM IOMMU Support"
-	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_APQ8064
-	select IOMMU_API
-	default n
-	help
-	  Support for the IOMMUs found on certain Qualcomm SOCs.
-	  These IOMMUs allow virtualization of the address space used by most
-	  cores within the multimedia subsystem.
-
-	  If unsure, say N here.
-
-config IOMMU_PGTABLES_L2
-	bool "Allow SMMU page tables in the L2 cache (Experimental)"
-	depends on MSM_IOMMU=y
-	depends on MMU
-	depends on CPU_DCACHE_DISABLE=n
+config MSM_RPM_RBCPR_STATS_LOG
+        tristate "MSM Resource Power Manager RPBCPR Stat Driver"
         depends on DEBUG_FS
-	depends on SMP
-	default y
+        depends on MSM_RPM
           help
-	 Improves TLB miss latency at the expense of potential L2 pollution.
-	 However, with large multimedia buffers, the TLB should mostly contain
-	 section mappings and TLB misses should be quite infrequent.
-	 Most people can probably say Y here.
+          This option enables a driver which reads RPM messages from a shared
+          memory location. These messages provide statistical information about
+          RBCPR (Rapid Bridge Core Power Reduction) information . The drivers
+          outputs the message via a debugfs node.
 
 config MSM_DIRECT_SCLK_ACCESS
 	bool "Direct access to the SCLK timer"
@@ -2241,27 +2205,6 @@ config MSM_ETM
 	select MSM_JTAG
 	help
 	  Enables embedded trace collection on MSM8660
-
-config MSM_QDSS
-	bool "Qualcomm Debug Subsystem"
-	select MSM_JTAG
-	help
-	  Enables support for Qualcomm Debug Subsystem.
-
-config MSM_QDSS_ETM_DEFAULT_ENABLE
-	bool "Turn on QDSS ETM Tracing by Default"
-	depends on MSM_QDSS
-	help
-	  Turns on QDSS ETM tracing by default. Otherwise, tracing is
-	  disabled by default but can be enabled by other means.
-
-config CLOCK_MAP
-	bool "Log clk_enable()/clk_disable() calls"
-	help
-	  Turn on extra debugging for clk_enable()/clk_disable() calls.
-	  A bitmap is maintained in non-cached memory and each registered
-	  clock gets a unique id. If the bitmap has that bit set the clock
-	  is enabled, otherwise the clock is disabled.
 
 config MSM_SLEEP_STATS
 	bool "Enable exporting of MSM sleep stats to userspace"
@@ -2510,15 +2453,6 @@ config MSM_L2_ERP_PRINT_ACCESS_ERRORS
 	  interrupt rather than as an exception, meaning that the backtrace may
 	  have some skid. This option may help with debugging, though production
 	  builds should probably say 'N' here.
-config MSM_L1_ERR_LOG
-	bool "Log CPU ERP events to system memory"
-	depends on MSM_CACHE_ERP
-	help
-	  Enable logging CPU ERP events to an area of memory that will be
-	  preserved across a system reset. This may be useful for detecting and
-	  troubleshooting ERP-related system crashes in the field.
-
-	  For production builds, you may want to say 'Y' here.
 
 config MSM_L2_ERP_PORT_PANIC
 	bool "Panic on L2 master port errors"
