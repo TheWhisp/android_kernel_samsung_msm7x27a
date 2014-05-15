@@ -164,8 +164,17 @@ config ARCH_MSM8960
 	select MSM_NATIVE_RESTART
 	select DONT_MAP_HOLE_AFTER_MEMBANK0
 	select MSM_REMOTE_SPINLOCK_SFPB
+	select ARCH_POPULATES_NODE_MAP
 	select ARCH_SPARSEMEM_ENABLE
 	select ARCH_HAS_HOLES_MEMORYMODEL
+	select MEMORY_HOTPLUG if ENABLE_DMM
+	select MEMORY_HOTREMOVE if ENABLE_DMM
+	select ARCH_ENABLE_MEMORY_HOTPLUG if ENABLE_DMM
+	select ARCH_ENABLE_MEMORY_HOTREMOVE if ENABLE_DMM
+	select MIGRATION if ENABLE_DMM
+	select ARCH_MEMORY_PROBE if ENABLE_DMM
+	select ARCH_MEMORY_REMOVE if ENABLE_DMM
+	select FIX_MOVABLE_ZONE if ENABLE_DMM
 	select CLEANCACHE
 	select MSM_MULTIMEDIA_USE_ION
 	select MULTI_IRQ_HANDLER
@@ -197,8 +206,17 @@ config ARCH_MSM8930
 	select MSM_NATIVE_RESTART
 	select DONT_MAP_HOLE_AFTER_MEMBANK0
 	select MSM_REMOTE_SPINLOCK_SFPB
+	select ARCH_POPULATES_NODE_MAP
 	select ARCH_SPARSEMEM_ENABLE
 	select ARCH_HAS_HOLES_MEMORYMODEL
+	select MEMORY_HOTPLUG if ENABLE_DMM
+	select MEMORY_HOTREMOVE if ENABLE_DMM
+	select ARCH_ENABLE_MEMORY_HOTPLUG if ENABLE_DMM
+	select ARCH_ENABLE_MEMORY_HOTREMOVE if ENABLE_DMM
+	select MIGRATION if ENABLE_DMM
+	select ARCH_MEMORY_PROBE if ENABLE_DMM
+	select ARCH_MEMORY_REMOVE if ENABLE_DMM
+	select FIX_MOVABLE_ZONE if ENABLE_DMM
 	select MSM_ULTRASOUND
 	select MULTI_IRQ_HANDLER
 	select MSM_PM8X60 if PM
@@ -230,10 +248,10 @@ config ARCH_APQ8064
 	select ARCH_SUPPORTS_MSI
 	select ARM_HAS_SG_CHAIN
 
-config ARCH_MSM8974
-	bool "MSM8974"
+config ARCH_MSMCOPPER
+	bool "MSM Copper"
 	select ARCH_MSM_KRAITMP
-	select GPIO_MSM_V3
+	select GPIO_MSM_V2
 	select ARM_GIC
 	select CPU_V7
 	select MSM_SCM if SMP
@@ -414,11 +432,6 @@ config MSM_ADM3
 	bool
 
 menu "MSM Board Selection"
-
-config MACH_JENA
-        bool "MSM7627A jena platform"
-		depends on ARCH_MSM7X27A
-        default n
 
 config MACH_HALIBUT
 	depends on ARCH_MSM7X01A
@@ -914,6 +927,26 @@ config MACH_FSM9XXX_SURF
 
 endmenu
 
+config MACH_TREBON_HWREV
+        hex "MSM7x27A TREBON HWREV"
+		depends on MACH_TREBON
+		default "0x2"
+		help
+          Qualcomm TREBON H/W revision.
+
+config TARGET_LOCALE_EUR_VODA
+        bool "EUR VODA"
+	default n
+        help
+          Support for the EUR VODA Board.
+
+config MACH_GEIM_HWREV
+        hex "MSM7x27A GEIM HWREV"
+		depends on MACH_GEIM
+		default "0x0"
+		help
+          Qualcomm GEIM H/W revision.
+
 config MACH_JENA_HWREV
         hex "MSM7x27A JENA HWREV"
 		depends on MACH_JENA
@@ -939,7 +972,7 @@ config PHYS_OFFSET
 	default "0x80200000" if ARCH_APQ8064
 	default "0x80200000" if ARCH_MSM8960
 	default "0x80200000" if ARCH_MSM8930
-	default "0x00000000" if ARCH_MSM8974
+	default "0x80200000" if ARCH_MSMCOPPER
 	default "0x10000000" if ARCH_FSM9XXX
 	default "0x20200000" if ARCH_MSM9625
 	default "0x00200000" if !MSM_STACKED_MEMORY
@@ -951,7 +984,7 @@ config PHYS_OFFSET
 config KERNEL_PMEM_EBI_REGION
 	bool "Enable in-kernel PMEM region for EBI"
 	default y if ARCH_MSM8X60
-	depends on ANDROID_PMEM && (ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSM8974)
+	depends on ANDROID_PMEM && (ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSMCOPPER)
 	help
 	   Enable the in-kernel PMEM allocator to use EBI memory.
 
@@ -1018,21 +1051,21 @@ choice
 
 	config DEBUG_MSM_UART1
 		bool "Kernel low-level debugging messages via MSM UART1"
-		depends on ARCH_MSM7X27 || ARCH_MSM7X30 || ARCH_QSD8X50 || ARCH_FSM9XXX
+		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the first serial port on MSM devices.
 
 	config DEBUG_MSM_UART2
 		bool "Kernel low-level debugging messages via MSM UART2"
-		depends on ARCH_MSM7X27 || ARCH_MSM7X30 || ARCH_QSD8X50 || ARCH_FSM9XXX
+		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the second serial port on MSM devices.
 
 	config DEBUG_MSM_UART3
 		bool "Kernel low-level debugging messages via MSM UART3"
-		depends on ARCH_MSM7X27 || ARCH_MSM7X30 || ARCH_QSD8X50
+		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the third serial port on MSM devices.
@@ -1047,15 +1080,16 @@ choice
 
 	config DEBUG_MSM8960_UART
 		bool "Kernel low-level debugging messages via MSM 8960 UART"
-		depends on ARCH_MSM8960 && DEBUG_LL
+		depends on ARCH_MSM8960
+		select DEBUG_MSM8930_UART
 		select MSM_HAS_DEBUG_UART_HS
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the serial port on MSM 8960 devices.
 
-	config DEBUG_MSM8930_UART
-		bool "Kernel low-level debugging messages via MSM 8930 UART"
-		depends on ARCH_MSM8930 && DEBUG_LL
+	config DEBUG_MSMCOPPER_UART
+		bool "Kernel low-level debugging messages via MSM Copper UART"
+		depends on ARCH_MSMCOPPER
 		select MSM_HAS_DEBUG_UART_HS
 		help
 		Say Y here if you want the debug print routines to direct
@@ -1075,7 +1109,7 @@ choice
 		select MSM_HAS_DEBUG_UART_HS_V14
 		help
 		  Say Y here if you want the debug print routines to direct
-		  their output to the serial port on MSM 8974 devices.
+		  their output to the serial port on MSM Copper devices.
 endchoice
 
 choice
@@ -1605,17 +1639,20 @@ config MSM_CPU_FREQ_SET_MIN_MAX
 config MSM_CPU_FREQ_MAX
 	int "Max CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
-	default 384000
+	default 100800
+
+config MSM7X27A_OVERCLOCK
+  	bool "Enable overclock for MSM7X27AA"
+  	depends on MSM_CPU_FREQ_SET_MIN_MAX
+  	default n
+  	help
+    	Enable overclock for MSM7X27AA. Make sure to set
+    	CONFIG_MSM_CPU_FREQ_MAX to 1008000.	
 
 config MSM_CPU_FREQ_MIN
 	int "Min CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
 	default 245760
-
-config MSM7X27A_OVERCLOCK
-	bool "Allow overclock msm7x27a devices above 1008mhz"
-	depends on ARCH_MSM7X27A
-	default n
 
 endif # CPU_FREQ_MSM
 
@@ -1884,6 +1921,7 @@ config MSM_RPM_REGULATOR_SMD
 config MSM_PIL
 	bool "Peripheral image loading"
 	select FW_LOADER
+	depends on (ARCH_MSM8X60 || ARCH_MSM8960)
 	default n
 	help
 	  Some peripherals need to be loaded into memory before they can be
@@ -2094,15 +2132,31 @@ config MSM_RPM_STATS_LOG
 	  the low power modes that RPM enters. The drivers outputs the message
 	  via a debugfs node.
 
-config MSM_RPM_RBCPR_STATS_LOG
-        tristate "MSM Resource Power Manager RPBCPR Stat Driver"
+config MSM_IOMMU
+	bool "MSM IOMMU Support"
+	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_APQ8064
+	select IOMMU_API
+	default n
+	help
+	  Support for the IOMMUs found on certain Qualcomm SOCs.
+	  These IOMMUs allow virtualization of the address space used by most
+	  cores within the multimedia subsystem.
+
+	  If unsure, say N here.
+
+config IOMMU_PGTABLES_L2
+	bool "Allow SMMU page tables in the L2 cache (Experimental)"
+	depends on MSM_IOMMU=y
+	depends on MMU
+	depends on CPU_DCACHE_DISABLE=n
         depends on DEBUG_FS
-        depends on MSM_RPM
+	depends on SMP
+	default y
           help
-          This option enables a driver which reads RPM messages from a shared
-          memory location. These messages provide statistical information about
-          RBCPR (Rapid Bridge Core Power Reduction) information . The drivers
-          outputs the message via a debugfs node.
+	 Improves TLB miss latency at the expense of potential L2 pollution.
+	 However, with large multimedia buffers, the TLB should mostly contain
+	 section mappings and TLB misses should be quite infrequent.
+	 Most people can probably say Y here.
 
 config MSM_DIRECT_SCLK_ACCESS
 	bool "Direct access to the SCLK timer"
@@ -2145,7 +2199,7 @@ config MSM_BUS_RPM_MULTI_TIER_ENABLED
 
 config MSM_WATCHDOG
 	bool "MSM Watchdog Support"
-	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSM9615 || ARCH_FSM9XXX
+	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSM9615
 	help
 		This enables the watchdog as is present on 8x60. Currently we use
 		core 0's watchdog, and reset the entire SoC if it times out. It does
@@ -2187,6 +2241,27 @@ config MSM_ETM
 	select MSM_JTAG
 	help
 	  Enables embedded trace collection on MSM8660
+
+config MSM_QDSS
+	bool "Qualcomm Debug Subsystem"
+	select MSM_JTAG
+	help
+	  Enables support for Qualcomm Debug Subsystem.
+
+config MSM_QDSS_ETM_DEFAULT_ENABLE
+	bool "Turn on QDSS ETM Tracing by Default"
+	depends on MSM_QDSS
+	help
+	  Turns on QDSS ETM tracing by default. Otherwise, tracing is
+	  disabled by default but can be enabled by other means.
+
+config CLOCK_MAP
+	bool "Log clk_enable()/clk_disable() calls"
+	help
+	  Turn on extra debugging for clk_enable()/clk_disable() calls.
+	  A bitmap is maintained in non-cached memory and each registered
+	  clock gets a unique id. If the bitmap has that bit set the clock
+	  is enabled, otherwise the clock is disabled.
 
 config MSM_SLEEP_STATS
 	bool "Enable exporting of MSM sleep stats to userspace"
@@ -2341,6 +2416,15 @@ config MSM_L2_SPM
 	  Enabling this driver allows configuring L2 SPM for low power modes
 	  on supported chipsets.
 
+config MACH_TREBON
+        depends on ARCH_MSM7X27A
+        depends on !MSM_STACKED_MEMORY
+        default n
+        bool "MSM7x27A TREBON"
+        help
+          Support for the Qualcomm TREBON 
+
+
 config MSM_MULTIMEDIA_USE_ION
 	bool "Multimedia suport using Ion"
 	depends on ION_MSM
@@ -2426,6 +2510,15 @@ config MSM_L2_ERP_PRINT_ACCESS_ERRORS
 	  interrupt rather than as an exception, meaning that the backtrace may
 	  have some skid. This option may help with debugging, though production
 	  builds should probably say 'N' here.
+config MSM_L1_ERR_LOG
+	bool "Log CPU ERP events to system memory"
+	depends on MSM_CACHE_ERP
+	help
+	  Enable logging CPU ERP events to an area of memory that will be
+	  preserved across a system reset. This may be useful for detecting and
+	  troubleshooting ERP-related system crashes in the field.
+
+	  For production builds, you may want to say 'Y' here.
 
 config MSM_L2_ERP_PORT_PANIC
 	bool "Panic on L2 master port errors"
@@ -2493,37 +2586,14 @@ config MSM_CACHE_DUMP
 	  This allows for analysis of the caches in case cache corruption is
 	  suspected.
 
-config MSM_CACHE_DUMP_ON_PANIC
-	bool "Dump caches on panic"
-	depends on MSM_CACHE_DUMP
+config MSM_DCVS
+	bool "Use MSM DCVS for CPU/GPU Frequency control"
+	depends on MSM_SCM
 	help
-	  By default, the caches are flushed on panic. This means that trying to
-	  look at them in a RAM dump will give useless data. Select this if you
-	  want to dump the L1 and L2 caches on panic before any flush occurs.
-	  If unsure, say N
-
-config MSM_HSIC_SYSMON
-	tristate "MSM HSIC system monitor driver"
-	depends on USB
-	help
-	  Add support for bridging with the system monitor interface of MDM
-	  over HSIC. This driver allows the local system monitor to
-	  communicate with the remote system monitor interface.
-
-config MSM_HSIC_SYSMON_TEST
-	tristate "MSM HSIC system monitor bridge test"
-	depends on USB && MSM_HSIC_SYSMON && DEBUG_FS
-	help
-	  Enable the test hook for the Qualcomm system monitor HSIC driver.
-	  This will create a debugfs file entry named "hsic_sysmon_test" which
-	  can be read and written to send character data to the sysmon port of
-	  the modem over USB.
-
-config MSM_8X60_FUSION_GPIO_GLITCH
-	tristate "Mask unexpected glitch during boot up"
-	help
-	  Enable masking of glitch during boot up, which helps in avoiding unwanted
-	  noise or s/w code from toggling the ap2mdm err fatal.
+	  Enable support for MSM DCVS to control all CPU and GPU core frequencies.
+	  The DCVS manager allows idle driver to feed the idle information to the
+	  algorithm and the algorithm returns a frequency for the core which is
+	  passed to the frequency change driver.
 
 config MSM_FIQ
 	bool "Enable FIQ for debugging"
