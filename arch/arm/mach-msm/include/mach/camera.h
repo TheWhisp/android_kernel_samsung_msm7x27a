@@ -21,12 +21,13 @@
 #include <linux/poll.h>
 #include <linux/cdev.h>
 #include <linux/platform_device.h>
-#include <linux/pm_qos.h>
+#include <linux/wakelock.h>
 #include <linux/regulator/consumer.h>
 #include "linux/types.h"
 
 #include <mach/board.h>
 #include <media/msm_camera.h>
+#include <mach/msm_subsystem_map.h>
 #include <linux/ion.h>
 #include <mach/iommu_domains.h>
 
@@ -129,6 +130,12 @@ struct msm_vpe_phy_info {
 	uint32_t p2_phy;
 	uint8_t  output_id; /* VFE31_OUTPUT_MODE_PT/S/V */
 	uint32_t frame_id;
+};
+
+struct msm_camera_csid_vc_cfg {
+	uint8_t cid;
+	uint8_t dt;
+	uint8_t decode_format;
 };
 
 struct msm_camera_csid_lut_params {
@@ -278,10 +285,19 @@ struct msm_sensor_ctrl {
 	int (*s_init)(const struct msm_camera_sensor_info *);
 	int (*s_release)(void);
 	int (*s_config)(void __user *);
+    int (*s_ext_config)(void __user *);
 	enum msm_camera_type s_camera_type;
 	uint32_t s_mount_angle;
 	enum msm_st_frame_packing s_video_packing;
 	enum msm_st_frame_packing s_snap_packing;
+};
+
+struct msm_actuator_ctrl {
+	int (*a_init_table)(void);
+	int (*a_power_up)(void *);
+	int (*a_power_down)(void *);
+	int (*a_create_subdevice)(void *, void *);
+	int (*a_config)(void __user *);
 };
 
 struct msm_strobe_flash_ctrl {
@@ -355,7 +371,8 @@ struct msm_sync {
 	struct msm_camvpe_fn vpefn;
 	struct msm_sensor_ctrl sctrl;
 	struct msm_strobe_flash_ctrl sfctrl;
-	struct pm_qos_request idle_pm_qos;
+	struct msm_actuator_ctrl actctrl;
+	struct wake_lock wake_lock;
 	struct platform_device *pdev;
 	int16_t ignore_qcmd_type;
 	uint8_t ignore_qcmd;
@@ -580,7 +597,7 @@ int msm_camio_enable(struct platform_device *dev);
 int msm_camio_vpe_clk_enable(uint32_t);
 int msm_camio_vpe_clk_disable(void);
 
-void msm_camio_mode_config(enum msm_camera_i2c_mux_mode mode);
+void msm_camio_mode_config(enum msm_cam_mode mode);
 int  msm_camio_clk_enable(enum msm_camio_clk_type clk);
 int  msm_camio_clk_disable(enum msm_camio_clk_type clk);
 int  msm_camio_clk_config(uint32_t freq);
@@ -608,15 +625,16 @@ int msm_camio_sensor_clk_on(struct platform_device *);
 int msm_camio_csi_config(struct msm_camera_csi_params *csi_params);
 int msm_camio_csiphy_config(struct msm_camera_csiphy_params *csiphy_params);
 int msm_camio_csid_config(struct msm_camera_csid_params *csid_params);
+void msm_io_read_interrupt(void);
 int add_axi_qos(void);
 int update_axi_qos(uint32_t freq);
 void release_axi_qos(void);
-void msm_camera_io_w(u32 data, void __iomem *addr);
-void msm_camera_io_w_mb(u32 data, void __iomem *addr);
-u32 msm_camera_io_r(void __iomem *addr);
-u32 msm_camera_io_r_mb(void __iomem *addr);
-void msm_camera_io_dump(void __iomem *addr, int size);
-void msm_camera_io_memcpy(void __iomem *dest_addr,
+void msm_io_w(u32 data, void __iomem *addr);
+void msm_io_w_mb(u32 data, void __iomem *addr);
+u32 msm_io_r(void __iomem *addr);
+u32 msm_io_r_mb(void __iomem *addr);
+void msm_io_dump(void __iomem *addr, int size);
+void msm_io_memcpy(void __iomem *dest_addr, void __iomem *src_addr, u32 len);
 		void __iomem *src_addr, u32 len);
 void msm_camio_set_perf_lvl(enum msm_bus_perf_setting);
 void msm_camio_bus_scale_cfg(

@@ -61,6 +61,10 @@ struct msm_camera_device_platform_data {
 	struct msm_camera_io_ext ioext;
 	struct msm_camera_io_clk ioclk;
 	uint8_t csid_core;
+	uint8_t is_csiphy;
+	uint8_t is_csic;
+	uint8_t is_csid;
+	uint8_t is_ispif;
 	uint8_t is_vpe;
 	struct msm_bus_scale_pdata *cam_bus_scale_table;
 };
@@ -483,7 +487,7 @@ struct mipi_dsi_panel_platform_data {
 
 struct lvds_panel_platform_data {
 	int *gpio;
-};
+	char dlane_swap;
 
 struct msm_wfd_platform_data {
 	char (*wfd_check_mdp_iommu_split)(void);
@@ -565,7 +569,7 @@ struct msm_vidc_platform_data {
 
 struct vcap_platform_data {
 	unsigned *gpios;
-	int num_gpios;
+        int cont_mode_dpb_count;
 	struct msm_bus_scale_pdata *bus_client_pdata;
 };
 
@@ -578,10 +582,10 @@ struct isp1763_platform_data {
 /* common init routines for use by arch/arm/mach-msm/board-*.c */
 
 #ifdef CONFIG_OF_DEVICE
-void msm_8974_init(struct of_dev_auxdata **);
+void msm_copper_init(struct of_dev_auxdata **);
 #endif
 void msm_add_devices(void);
-void msm_8974_add_devices(void);
+void msm_copper_add_devices(void);
 void msm_8974_add_drivers(void);
 void msm_map_common_io(void);
 void msm_map_qsd8x50_io(void);
@@ -592,18 +596,18 @@ void msm_map_apq8064_io(void);
 void msm_map_msm7x30_io(void);
 void msm_map_fsm9xxx_io(void);
 void msm_map_8974_io(void);
-void msm_map_msm8625_io(void);
+void msm_map_copper_io(void);
 void msm_map_msm9625_io(void);
 void msm_init_irq(void);
-void msm_8974_init_irq(void);
+void msm_copper_init_irq(void);
 void vic_handle_irq(struct pt_regs *regs);
 void msm_8974_reserve(void);
 void msm_8974_very_early(void);
-void msm_8974_init_gpiomux(void);
+void msm_copper_reserve(void);
 
 /* Dump debug info (states, rate, etc) of clocks */
 #if defined(CONFIG_ARCH_MSM7X27)
-void msm_clk_dump_debug_info(void);
+void msm_copper_very_early(void);
 #else
 static inline void msm_clk_dump_debug_info(void) {}
 #endif
