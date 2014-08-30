@@ -55,6 +55,10 @@ config TOUCHSCREEN_AD7877
 	  To compile this driver as a module, choose M here: the
 	  module will be called ad7877.
 
+config TOUCHSCREEN_AD7879
+	tristate
+	default n
+
 config TOUCHSCREEN_ATMEL_MAXTOUCH
        tristate "Atmel maXTouch based touchscreens"
        depends on I2C
@@ -272,7 +276,7 @@ config TOUCHSCREEN_ILI210X
 
 config TOUCHSCREEN_S3C2410
 	tristate "Samsung S3C2410/generic touchscreen input driver"
-	depends on ARCH_S3C24XX || SAMSUNG_DEV_TS
+	depends on ARCH_S3C2410 || SAMSUNG_DEV_TS
 	select S3C_ADC
 	help
 	  Say Y here if you have the s3c2410 touchscreen.
@@ -489,6 +493,12 @@ config SYNA_MULTI_TOUCH
 	tristate "Synaptics i2c touchscreen(ClearPad 3000) MutilTouch support"
 	depends on TOUCHSCREEN_SYNAPTICS_RMI4_I2C
 	default y
+
+config TOUCHSCREEN_ZINITIX_TREBON
+	tristate "Zinitix i2c touchscreen"
+	depends on I2C
+	help
+		This enable support for Zinitix over I2C based touchscreen.
 
 config TOUCHSCREEN_MELFAS
 	tristate "Melfas i2c touchscreen"

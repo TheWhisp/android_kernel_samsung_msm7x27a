@@ -230,10 +230,10 @@ config ARCH_APQ8064
 	select ARCH_SUPPORTS_MSI
 	select ARM_HAS_SG_CHAIN
 
-config ARCH_MSM8974
-	bool "MSM8974"
+config ARCH_MSMCOPPER
+	bool "MSM Copper"
 	select ARCH_MSM_KRAITMP
-	select GPIO_MSM_V3
+	select GPIO_MSM_V2
 	select ARM_GIC
 	select CPU_V7
 	select MSM_SCM if SMP
@@ -414,11 +414,6 @@ config MSM_ADM3
 	bool
 
 menu "MSM Board Selection"
-
-config MACH_JENA
-        bool "MSM7627A jena platform"
-		depends on ARCH_MSM7X27A
-        default n
 
 config MACH_HALIBUT
 	depends on ARCH_MSM7X01A
@@ -914,6 +909,26 @@ config MACH_FSM9XXX_SURF
 
 endmenu
 
+config MACH_TREBON_HWREV
+        hex "MSM7x27A TREBON HWREV"
+		depends on MACH_TREBON
+		default "0x2"
+		help
+          Qualcomm TREBON H/W revision.
+
+config TARGET_LOCALE_EUR_VODA
+        bool "EUR VODA"
+	default n
+        help
+          Support for the EUR VODA Board.
+
+config MACH_GEIM_HWREV
+        hex "MSM7x27A GEIM HWREV"
+		depends on MACH_GEIM
+		default "0x0"
+		help
+          Qualcomm GEIM H/W revision.
+
 config MACH_JENA_HWREV
         hex "MSM7x27A JENA HWREV"
 		depends on MACH_JENA
@@ -939,7 +954,7 @@ config PHYS_OFFSET
 	default "0x80200000" if ARCH_APQ8064
 	default "0x80200000" if ARCH_MSM8960
 	default "0x80200000" if ARCH_MSM8930
-	default "0x00000000" if ARCH_MSM8974
+	default "0x80200000" if ARCH_MSMCOPPER
 	default "0x10000000" if ARCH_FSM9XXX
 	default "0x20200000" if ARCH_MSM9625
 	default "0x00200000" if !MSM_STACKED_MEMORY
@@ -951,7 +966,7 @@ config PHYS_OFFSET
 config KERNEL_PMEM_EBI_REGION
 	bool "Enable in-kernel PMEM region for EBI"
 	default y if ARCH_MSM8X60
-	depends on ANDROID_PMEM && (ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSM8974)
+	depends on ANDROID_PMEM && (ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSMCOPPER)
 	help
 	   Enable the in-kernel PMEM allocator to use EBI memory.
 
@@ -1018,21 +1033,21 @@ choice
 
 	config DEBUG_MSM_UART1
 		bool "Kernel low-level debugging messages via MSM UART1"
-		depends on ARCH_MSM7X27 || ARCH_MSM7X30 || ARCH_QSD8X50 || ARCH_FSM9XXX
+		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the first serial port on MSM devices.
 
 	config DEBUG_MSM_UART2
 		bool "Kernel low-level debugging messages via MSM UART2"
-		depends on ARCH_MSM7X27 || ARCH_MSM7X30 || ARCH_QSD8X50 || ARCH_FSM9XXX
+		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the second serial port on MSM devices.
 
 	config DEBUG_MSM_UART3
 		bool "Kernel low-level debugging messages via MSM UART3"
-		depends on ARCH_MSM7X27 || ARCH_MSM7X30 || ARCH_QSD8X50
+		depends on ARCH_MSM7X00A || ARCH_MSM7X30 || ARCH_QSD8X50
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the third serial port on MSM devices.
@@ -1047,15 +1062,15 @@ choice
 
 	config DEBUG_MSM8960_UART
 		bool "Kernel low-level debugging messages via MSM 8960 UART"
-		depends on ARCH_MSM8960 && DEBUG_LL
+		depends on ARCH_MSM8960
 		select MSM_HAS_DEBUG_UART_HS
 		help
 		  Say Y here if you want the debug print routines to direct
 		  their output to the serial port on MSM 8960 devices.
 
-	config DEBUG_MSM8930_UART
-		bool "Kernel low-level debugging messages via MSM 8930 UART"
-		depends on ARCH_MSM8930 && DEBUG_LL
+	config DEBUG_MSMCOPPER_UART
+		bool "Kernel low-level debugging messages via MSM Copper UART"
+		depends on ARCH_MSMCOPPER
 		select MSM_HAS_DEBUG_UART_HS
 		help
 		Say Y here if you want the debug print routines to direct
@@ -1075,7 +1090,7 @@ choice
 		select MSM_HAS_DEBUG_UART_HS_V14
 		help
 		  Say Y here if you want the debug print routines to direct
-		  their output to the serial port on MSM 8974 devices.
+		  their output to the serial port on MSM Copper devices.
 endchoice
 
 choice
@@ -1605,17 +1620,20 @@ config MSM_CPU_FREQ_SET_MIN_MAX
 config MSM_CPU_FREQ_MAX
 	int "Max CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
-	default 384000
+	default 100800
+
+config MSM7X27A_OVERCLOCK
+  	bool "Enable overclock for MSM7X27AA"
+  	depends on MSM_CPU_FREQ_SET_MIN_MAX
+  	default n
+  	help
+    	Enable overclock for MSM7X27AA. Make sure to set
+    	CONFIG_MSM_CPU_FREQ_MAX to 1008000.	
 
 config MSM_CPU_FREQ_MIN
 	int "Min CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
 	default 245760
-
-config MSM7X27A_OVERCLOCK
-	bool "Allow overclock msm7x27a devices above 1008mhz"
-	depends on ARCH_MSM7X27A
-	default n
 
 endif # CPU_FREQ_MSM
 
@@ -2145,7 +2163,7 @@ config MSM_BUS_RPM_MULTI_TIER_ENABLED
 
 config MSM_WATCHDOG
 	bool "MSM Watchdog Support"
-	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSM9615 || ARCH_FSM9XXX
+	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_MSM9615
 	help
 		This enables the watchdog as is present on 8x60. Currently we use
 		core 0's watchdog, and reset the entire SoC if it times out. It does
@@ -2341,6 +2359,15 @@ config MSM_L2_SPM
 	  Enabling this driver allows configuring L2 SPM for low power modes
 	  on supported chipsets.
 
+config MACH_TREBON
+        depends on ARCH_MSM7X27A
+        depends on !MSM_STACKED_MEMORY
+        default n
+        bool "MSM7x27A TREBON"
+        help
+          Support for the Qualcomm TREBON 
+
+
 config MSM_MULTIMEDIA_USE_ION
 	bool "Multimedia suport using Ion"
 	depends on ION_MSM
@@ -2493,37 +2520,14 @@ config MSM_CACHE_DUMP
 	  This allows for analysis of the caches in case cache corruption is
 	  suspected.
 
-config MSM_CACHE_DUMP_ON_PANIC
-	bool "Dump caches on panic"
-	depends on MSM_CACHE_DUMP
+config MSM_DCVS
+	bool "Use MSM DCVS for CPU/GPU Frequency control"
+	depends on MSM_SCM
 	help
-	  By default, the caches are flushed on panic. This means that trying to
-	  look at them in a RAM dump will give useless data. Select this if you
-	  want to dump the L1 and L2 caches on panic before any flush occurs.
-	  If unsure, say N
-
-config MSM_HSIC_SYSMON
-	tristate "MSM HSIC system monitor driver"
-	depends on USB
-	help
-	  Add support for bridging with the system monitor interface of MDM
-	  over HSIC. This driver allows the local system monitor to
-	  communicate with the remote system monitor interface.
-
-config MSM_HSIC_SYSMON_TEST
-	tristate "MSM HSIC system monitor bridge test"
-	depends on USB && MSM_HSIC_SYSMON && DEBUG_FS
-	help
-	  Enable the test hook for the Qualcomm system monitor HSIC driver.
-	  This will create a debugfs file entry named "hsic_sysmon_test" which
-	  can be read and written to send character data to the sysmon port of
-	  the modem over USB.
-
-config MSM_8X60_FUSION_GPIO_GLITCH
-	tristate "Mask unexpected glitch during boot up"
-	help
-	  Enable masking of glitch during boot up, which helps in avoiding unwanted
-	  noise or s/w code from toggling the ap2mdm err fatal.
+	  Enable support for MSM DCVS to control all CPU and GPU core frequencies.
+	  The DCVS manager allows idle driver to feed the idle information to the
+	  algorithm and the algorithm returns a frequency for the core which is
+	  passed to the frequency change driver.
 
 config MSM_FIQ
 	bool "Enable FIQ for debugging"

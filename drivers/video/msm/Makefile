@@ -176,6 +176,7 @@ obj-$(CONFIG_FB_MSM_LCDC_TRULY_HVGA_IPS3P2335) += lcdc_truly_ips3p2335.o
 ##################################
 # Lcd driver for Samsung Project #
 ##################################
+obj-$(CONFIG_FB_MSM_LCDC_TREBON_HVGA) += lcdc_trebon.o lcdc_auo_hvga.o lcdc_backlight_ic.o
 obj-$(CONFIG_FB_MSM_LCDC_JENA_HVGA) += lcdc_jena.o lcdc_backlight_ic.o
 
 
@@ -191,6 +192,9 @@ obj-$(CONFIG_FB_MSM_EXTMDDI_SVGA) += mddi_ext_lcd.o
 obj-$(CONFIG_FB_MSM_WRITEBACK_MSM_PANEL) += mdp4_wfd_writeback_panel.o
 obj-$(CONFIG_FB_MSM_WRITEBACK_MSM_PANEL) += mdp4_wfd_writeback.o
 obj-$(CONFIG_FB_MSM_WRITEBACK_MSM_PANEL) += mdp4_overlay_writeback.o
+
+obj-$(CONFIG_MSM_VIDC_1080P) += vidc/
+obj-$(CONFIG_MSM_VIDC_720P) += vidc/
 else
 obj-$(CONFIG_FB_MSM_EBI2) += ebi2_host.o
 obj-$(CONFIG_FB_MSM_EBI2) += ebi2_lcd.o
@@ -198,8 +202,5 @@ obj-y += msm_fb_panel.o
 obj-$(CONFIG_FB_MSM_EBI2_EPSON_S1D_QVGA_PANEL) += ebi2_epson_s1d_qvga.o
 endif
 endif
-
-obj-$(CONFIG_MSM_VIDC_1080P) += vidc/
-obj-$(CONFIG_MSM_VIDC_720P) += vidc/
 clean:
 	rm *.o .*cmd
